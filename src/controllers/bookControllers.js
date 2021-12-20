@@ -20,7 +20,6 @@ const isValidObjectId = function (ObjectId) {
 }
 
 //POST /books
-//It Need Authentication
 
 const createBook = async function (req, res) {
     try {
@@ -160,7 +159,6 @@ const findBook = async function (req, res) {
 
 
 //PUT /books/:bookId
-//It Need Authentication
 
 const updateBook = async function (req, res) {
     try {
@@ -218,7 +216,7 @@ const updateBook = async function (req, res) {
         }
         if (releasedate === "") { return res.status(400).send({ status: false, messege: "Provide The Release Date" }) }
 
-        const check = await bookModel.findOne({ _id: bookId })
+        const check = await bookModel.findOne({ _id: bookId,isDeleted:false })
         if(!check){
             return res.status(404).send({status:false, msg: "Currently Their Is No Book" })
         }
@@ -239,7 +237,6 @@ const updateBook = async function (req, res) {
 
 
 //DELETE /books/:bookId
-//It Need Authentication
 
 const deleteBook = async function (req, res) {
     try {

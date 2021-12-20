@@ -56,8 +56,8 @@ const createWriter = async function (req, res) {
       res.status(400).send({ status: false, message: `password is required` });
       return;
     }
-    if (!((password.split(" ").join("")).length >= 8 && (password.split(" ").join("")).length <= 15)) {
-      res.status(400).send({ status: false, message: `Password length should be in between 8 to 15 ` });
+    if (!(/^[a-zA-Z0-9!@#$%^&*]{8,15}$/.test(password))) {
+      res.status(400).send({ status: false, message: `Password length should be A Valid Password And Length Should Be in between 8 to 15 `});
       return;
     }
     if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email))) {
@@ -68,7 +68,8 @@ const createWriter = async function (req, res) {
       res.status(400).send({ status: false, message: `${phone} is not a valid number` })
       return
     }
-    if(!(title == "Mr" || title =="Mrs" || title =="Miss")){
+    let TrimTitle=title.trim()
+    if(!(TrimTitle == "Mr" || TrimTitle =="Mrs" || TrimTitle =="Miss")){
       return res.status(400).send({status:false,message:"Title can Only Contain Mr,Mrs,Miss"})
     }
 
@@ -104,13 +105,13 @@ const login = async function (req, res) {
       res.status(400).send({ status: false, message: `Email should be a valid email address` })
       return
     }
-    if  (!((password.split(" ").join("")).length >= 8 && (password.split(" ").join("")).length <= 15)) {
-      res.status(400).send({ status: false, message: `Password length should be in between 8 to 15 ` });
+    if (!(/^[a-zA-Z0-9!@#$%^&*]{8,15}$/.test(password))) {
+      res.status(400).send({ status: false, message: `Password length should be A Valid Password And Length Should Be in between 8 to 15 `});
       return;
     }
 
     if (email && password) {
-      let User = await writerModel.findOne({ email: email.trim().toLowerCase(), password: password.split(" ").join("") });
+      let User = await writerModel.findOne({ email: email.trim().toLowerCase(), password: password.trim() });
       if (User) {
         const Token = jwt.sign({ userId: User._id }, "login",{expiresIn: "24h"})
         res.header('x-api-key', Token)
