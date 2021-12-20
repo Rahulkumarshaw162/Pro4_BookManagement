@@ -16,7 +16,7 @@ const isValidRequestBody = function (requestBody) {
 }
 const isValidObjectId = function (ObjectId) {
     return mongoose.Types.ObjectId.isValid(ObjectId)
-    
+
 }
 
 //POST /books
@@ -134,24 +134,27 @@ const getBook = async function (req, res) {
 const findBook = async function (req, res) {
     try {
         let bookId = req.params.bookId
-        if (!isValid(bookId) && !isValidObjectId(bookId)) {
+        if (!isValidObjectId(bookId)) {
             return res.status(400).send({ status: false, messege: "Please Use A Valid Link" })
-        } else {
-            let findbook = await bookModel.findOne({ _id: bookId, isDeleted: false }).select({ __v: 0 })
-            if (findbook) {
-                let { title, excerpt, userId, category, subcategory, isDeleted, reviews, deletedAt, releasedAt, createdAt, updatedAt } = findbook
-
-                let reviewsData = await reviewModel.find({ bookId: bookId, isDeleted: false }).select({ createdAt: 0, updatedAt: 0, __v: 0 });
-
-                const data = { title, excerpt, userId, category, subcategory, isDeleted, reviews, deletedAt, releasedAt, createdAt, updatedAt, reviewsData }
-
-                data["reviews"] = data["reviewsData"].length
-                return res.status(200).send({ status: true, messege: "Book List", Data: data })
-
-            } else {
-                return res.status(404).send({ status: false, messege: "Cant Find What You Are Looking For" })
-            }
         }
+        if (!isValid(bookId)) {
+            return res.status(400).send({ status: false, messege: "Please Use A Valid Link" })
+        }
+        let findbook = await bookModel.findOne({ _id: bookId, isDeleted: false }).select({ __v: 0 })
+        if (findbook) {
+            let { title, excerpt, userId, category, subcategory, isDeleted, reviews, deletedAt, releasedAt, createdAt, updatedAt } = findbook
+
+            let reviewsData = await reviewModel.find({ bookId: bookId, isDeleted: false }).select({ createdAt: 0, updatedAt: 0, __v: 0 });
+
+            const data = { title, excerpt, userId, category, subcategory, isDeleted, reviews, deletedAt, releasedAt, createdAt, updatedAt, reviewsData }
+
+            data["reviews"] = data["reviewsData"].length
+            return res.status(200).send({ status: true, messege: "Book List", Data: data })
+
+        } else {
+            return res.status(404).send({ status: false, messege: "Cant Find What You Are Looking For" })
+        }
+
     } catch (error) {
         return res.status(500).send({ status: false, message: error.message });
     }
@@ -216,11 +219,11 @@ const updateBook = async function (req, res) {
         }
         if (releasedate === "") { return res.status(400).send({ status: false, messege: "Provide The Release Date" }) }
 
-        const check = await bookModel.findOne({ _id: bookId,isDeleted:false })
-        if(!check){
-            return res.status(404).send({status:false, msg: "Currently Their Is No Book" })
+        const check = await bookModel.findOne({ _id: bookId, isDeleted: false })
+        if (!check) {
+            return res.status(404).send({ status: false, msg: "Currently Their Is No Book" })
         }
-        let  id = check.userId
+        let id = check.userId
 
         if (req.user.userId == id) {
             const updatedBook = await bookModel.findOneAndUpdate({ _id: bookId, isDeleted: false }, { title: title, excerpt: excerpt, ISBN: ISBN, releasedAt: releasedate }, { new: true })
