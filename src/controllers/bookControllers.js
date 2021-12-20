@@ -80,7 +80,7 @@ const createBook = async function (req, res) {
                 let savedBook = await bookModel.create(book);
                 return res.status(201).send({ status: true, message: 'Success', data: savedBook });
             } else {
-                return res.status(400).send({ status: false, messege: "Cant Find The Writer" });
+                return res.status(404).send({ status: false, messege: "Cant Find The Writer" });
             }
         } else {
             return res.status(400).send({ status: false, messege: "You are not authorised" });

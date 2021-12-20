@@ -83,7 +83,7 @@ const updateReview = async function (req, res) {
         let bookId = req.params.bookId
         let reviewId = req.params.reviewId
         if (!(isValid(bookId && reviewId))) {
-            return res.status(404).send({ messege: "Please provide The Id Properly" })
+            return res.status(400).send({ messege: "Please provide The Id Properly" })
         }
         if (!isValidRequestBody(body)) {
             return res.status(400).send({ messege: "Please Provide The Required Field" })
@@ -99,19 +99,19 @@ const updateReview = async function (req, res) {
         const { reviewedBy, review, rating } = body
         if (reviewedBy) {
             if (!isValid(reviewedBy)) {
-                return res.status(404).send({ messege: "Please provide The Name" })
+                return res.status(400).send({ messege: "Please provide The Name" })
             }
         }
         if(reviewedBy === ""){return res.status(404).send({ messege: "Please provide The Name" })}
         if (review) {
             if (!isValid(review)) {
-                return res.status(404).send({ messege: "Please Provide Your Review" })
+                return res.status(400).send({ messege: "Please Provide Your Review" })
             }
         }
         if(review === ""){return res.status(404).send({ messege: "Please provide The Review" })}
         if (rating) {
             if (!isValid(rating)) {
-                return res.status(404).send({ messege: "Please Provide Your Rating" })
+                return res.status(400).send({ messege: "Please Provide Your Rating" })
             }
             if (!(rating >= 1 && rating <= 5)) {
                 return res.status(400).send({ status: false, messege: "Rating Value Should Be In Between 1 to 5" })
@@ -120,11 +120,11 @@ const updateReview = async function (req, res) {
 
         let find = await bookModel.findOne({ _id: bookId, isDeleted: false })
         if (!find) {
-            return res.status(400).send({ messege: "The Book Doesn't Exist In Our Data" })
+            return res.status(404).send({ messege: "The Book Doesn't Exist In Our Data" })
         }
         let check = await reviewModel.findOne({ _id: reviewId, isDeleted: false })
         if (!check) {
-            return res.status(400).send({ status: false, messege: "The Review Data Doesn't Exist" })
+            return res.status(404).send({ status: false, messege: "The Review Data Doesn't Exist" })
         }
         if (find && check) {
             let equal = check.bookId
@@ -136,7 +136,7 @@ const updateReview = async function (req, res) {
                 return res.status(400).send({ status: false, messege: "You Are Not Allowed To Update This" })
             }
         } else {
-            return res.status(400).send({ status: false, messege: "Cant Find What You Are Looking For" })
+            return res.status(404).send({ status: false, messege: "Cant Find What You Are Looking For" })
         }
     } catch (error) {
         res.status(500).send({ status: false, message: error.message });
@@ -170,11 +170,11 @@ const reviewDelete = async function (req, res) {
 
         let findbook = await bookModel.findOne({ _id: bookID })
         if (!findbook) {
-            return res.status(400).send({ message: "Currently Their Is No booK" })
+            return res.status(404).send({ message: "Currently Their Is No booK" })
         }
         let findreview = await reviewModel.findOne({ _id: reviewId })
         if (!findreview) {
-            return res.status(400).send({ message: "Currently Their Is No review" })
+            return res.status(404).send({ message: "Currently Their Is No review" })
         }
         if (findbook && findreview) {
             let ID = findreview.bookId
@@ -189,7 +189,7 @@ const reviewDelete = async function (req, res) {
                 return res.status(400).send({ status: false, messege: "You Are Not Allowed To Delete This" })
             }
         } else {
-            return res.status(400).send({ status: false, messege: "Cant Find What You Are Looking For" })
+            return res.status(404).send({ status: false, messege: "Cant Find What You Are Looking For" })
         }
     }
     catch (error) {

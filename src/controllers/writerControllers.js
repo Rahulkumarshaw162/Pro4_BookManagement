@@ -57,15 +57,15 @@ const createWriter = async function (req, res) {
       return;
     }
     if (!((password.split(" ").join("")).length >= 8 && (password.split(" ").join("")).length <= 15)) {
-      res.status(404).send({ status: false, message: `Password length should be in between 8 to 15 ` });
+      res.status(400).send({ status: false, message: `Password length should be in between 8 to 15 ` });
       return;
     }
     if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email))) {
-      res.status(404).send({ status: false, message: `${email} should be a valid email address` })
+      res.status(400).send({ status: false, message: `${email} should be a valid email address` })
       return
     }
     if (!(/^(\+91[\-\s]?)?[0]?(91)?[789]\d{9}$/.test(phone))) {
-      res.status(404).send({ status: false, message: `${phone} is not a valid number` })
+      res.status(400).send({ status: false, message: `${phone} is not a valid number` })
       return
     }
     if(!(title == "Mr" || title =="Mrs" || title =="Miss")){
@@ -101,11 +101,11 @@ const login = async function (req, res) {
       return res.status(400).send({ status: false, message: "please provide the password field" })
     }
     if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email))) {
-      res.status(404).send({ status: false, message: `Email should be a valid email address` })
+      res.status(400).send({ status: false, message: `Email should be a valid email address` })
       return
     }
     if  (!((password.split(" ").join("")).length >= 8 && (password.split(" ").join("")).length <= 15)) {
-      res.status(404).send({ status: false, message: `Password length should be in between 8 to 15 ` });
+      res.status(400).send({ status: false, message: `Password length should be in between 8 to 15 ` });
       return;
     }
 
@@ -114,10 +114,10 @@ const login = async function (req, res) {
       if (User) {
         const Token = jwt.sign({ userId: User._id }, "login",{expiresIn: "24h"})
         res.header('x-api-key', Token)
-
         res.status(200).send({ status: true, messege: "You Have Successfully Logged In" })
+        return ;
       } else {
-        return res.status(400).send({ status: false, messege: "Invalid Credential" })
+        return res.status(404).send({ status: false, messege: "Invalid Credential" })
       }
 
     }
