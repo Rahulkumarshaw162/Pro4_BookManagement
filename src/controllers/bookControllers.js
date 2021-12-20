@@ -202,7 +202,7 @@ const updateBook = async function (req, res) {
         if (ISBN) {
 
             if (!isValid(ISBN)) {
-                return res.status(400).send({ messege: "Please Provide The Valid ISBN" })
+                return res.status(400).send({status:false, messege: "Please Provide The Valid ISBN" })
             }
             const SameISBN = await bookModel.findOne({ ISBN: ISBN.split(" ").join("") });
             if (SameISBN) {
@@ -226,6 +226,10 @@ const updateBook = async function (req, res) {
         let id = check.userId
 
         if (req.user.userId == id) {
+            let findid1 = await writerModel.findOne({ id })
+            if(!findid1){
+                return res.status(404).send({status:false, messege:"Cant Find The Writer"})
+            }
             const updatedBook = await bookModel.findOneAndUpdate({ _id: bookId, isDeleted: false }, { title: title, excerpt: excerpt, ISBN: ISBN, releasedAt: releasedate }, { new: true })
 
             return res.status(200).send({ status: true, message: 'Book updated successfully', data: updatedBook });
@@ -256,6 +260,10 @@ const deleteBook = async function (req, res) {
         }
         let id = findbook.userId
         if (req.user.userId == id) {
+            let findid2 = await writerModel.findOne({ id })
+            if(!findid2){
+                return res.status(404).send({status:false, messege:"Cant Find The Writer"})
+            }
             let deletedbook = await bookModel.findOneAndUpdate({ _id: bookId, isDeleted: false }, { isDeleted: true, deletedAt: new Date() }, { new: true })
             if (deletedbook) {
                 return res.status(200).send({ status: true, messege: "Book Deleted Successfully", data: deletedbook })
