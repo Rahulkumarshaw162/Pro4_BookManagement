@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 
 const writerSchema = new mongoose.Schema({
 
-     title: {type:String,required:true, enum:['Mr', 'Mrs','Miss']},
+     title: {type:String,required:true, enum:['Mr', 'Mrs','Miss'],trim:true},
      name: {type:String,required:true,trim:true},
      phone: {
              type:String,
