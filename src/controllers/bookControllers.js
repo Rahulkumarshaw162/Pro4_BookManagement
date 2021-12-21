@@ -30,7 +30,7 @@ const createBook = async function (req, res) {
             return;
         }
         const { title, excerpt, userId, ISBN, category, subCategory } = book
-        const isBookAlreadyExist = await bookModel.findOne({ title: title, ISBN: ISBN });
+        const isBookAlreadyExist = await bookModel.findOne({ title: title, ISBN: ISBN ,isDeleted:false});
         if (isBookAlreadyExist) {
             return res.status(403).send({ status: false, message: 'Book  already  exist' });
         }
@@ -63,11 +63,11 @@ const createBook = async function (req, res) {
             res.status(400).send({ status: false, message: `subCategory is required` });
             return;
         }
-        const sameTitle = await bookModel.findOne({ title: title.trim() });
+        const sameTitle = await bookModel.findOne({ title: title.trim(),isDeleted:false });
         if (sameTitle) {
             return res.status(403).send({ status: false, message: `${title} is already in used` });
         }
-        const sameISBN = await bookModel.findOne({ ISBN: ISBN.split(" ").join("") });
+        const sameISBN = await bookModel.findOne({ ISBN: ISBN.split(" ").join(""),isDeleted:false });
         if (sameISBN) {
             return res.status(403).send({ status: false, message: `${ISBN.split(" ").join("")} is already in used` });
         }
@@ -186,7 +186,7 @@ const updateBook = async function (req, res) {
             if (!isValid(title)) {
                 return res.status(400).send({ messege: "Please Provide The Valid Title" })
             }
-            const sametitle = await bookModel.findOne({ title: title.trim() });
+            const sametitle = await bookModel.findOne({ title: title.trim(),isDeleted:false });
             if (sametitle) {
                 return res.status(403).send({ status: false, message: `${title.trim()} is already in used` });
             }
@@ -204,7 +204,7 @@ const updateBook = async function (req, res) {
             if (!isValid(ISBN)) {
                 return res.status(400).send({status:false, messege: "Please Provide The Valid ISBN" })
             }
-            const SameISBN = await bookModel.findOne({ ISBN: ISBN.split(" ").join("") });
+            const SameISBN = await bookModel.findOne({ ISBN: ISBN.split(" ").join(""),isDeleted:false });
             if (SameISBN) {
                 return res.status(403).send({ status: false, message: `${ISBN.split(" ").join("")} is already in used` });
             }
@@ -254,7 +254,7 @@ const deleteBook = async function (req, res) {
         if (!isValidObjectId(bookId)) {
             return res.status(400).send({ messege: "Please Provide Valid ObjectId" })
         }
-        let findbook = await bookModel.findOne({ _id: bookId })
+        let findbook = await bookModel.findOne({ _id: bookId ,isDeleted:false})
         if (!findbook) {
             return res.status(400).send({ message: "Currently Their Is No booK" })
         }

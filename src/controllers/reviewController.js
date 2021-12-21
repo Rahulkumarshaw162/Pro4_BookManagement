@@ -179,11 +179,11 @@ const reviewDelete = async function (req, res) {
         }
 
 
-        let findbook = await bookModel.findOne({ _id: bookID })
+        let findbook = await bookModel.findOne({ _id: bookID,isDeleted:false })
         if (!findbook) {
             return res.status(404).send({ message: "Currently Their Is No booK" })
         }
-        let findreview = await reviewModel.findOne({ _id: reviewId })
+        let findreview = await reviewModel.findOne({ _id: reviewId ,isDeleted:false})
         if (!findreview) {
             return res.status(404).send({ message: "Currently Their Is No review" })
         }
