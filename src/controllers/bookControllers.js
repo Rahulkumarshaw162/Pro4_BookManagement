@@ -97,16 +97,28 @@ const getBook = async function (req, res) {
     try {
         let updatedfilter = { isDeleted: false }
         if (req.query.userId) {
-            updatedfilter["userId"] = req.query.userId
             if (!isValidObjectId(req.query.userId)) {
                 res.status(400).send({ status: false, message: `Userid is Invalid` });
                 return;
             }
+            if (!isValid(req.query.userId)) {
+                res.status(400).send({ status: false, message: `Userid is Invalid` });
+                return;
+            }
+            updatedfilter["userId"] = req.query.userId
         }
         if (req.query.category) {
+            if (!isValid(req.query.category)) {
+                res.status(400).send({ status: false, message: `Category is Invalid` });
+                return;
+            }
             updatedfilter["category"] = (req.query.category).toLowerCase().trim()
         }
         if (req.query.subCategory) {
+            if (!isValid(req.query.subCategory)) {
+                res.status(400).send({ status: false, message: `subCategory is Invalid` });
+                return;
+            }
             updatedfilter["subCategory"] = (req.query.subCategory).toLowerCase().trim()
         }
         let check = await bookModel.find(updatedfilter).select({ _id: 1, title: 1, excerpt: 1, userId: 1, category: 1, releasedAt: 1, reviews: 1 })
