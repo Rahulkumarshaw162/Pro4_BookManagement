@@ -20,7 +20,7 @@ const bookSchema = new mongoose.Schema({
 
     isDeleted:{ type:Boolean, default:false},
 
-    releasedAt:{ type:String, default:null},
+    releasedAt:{ type:String, default:null,required:true},
 
 }, { timestamps: true })
 
