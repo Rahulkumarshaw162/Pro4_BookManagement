@@ -120,19 +120,5 @@ const login = async function (req, res) {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 module.exports.createWriter = createWriter
 module.exports.login = login
